@@ -1,4 +1,5 @@
-import type { NextFunction } from "express";
+import { validationResult } from "express-validator";
+import type { NextFunction, Request } from "express";
 
 export type TError = Error & {
   statusCode?: number;
@@ -19,4 +20,12 @@ export function catchError(error: TError, next: NextFunction) {
   }
 
   next (error);
+}
+
+export function validateBody(req: Request) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throwError("Validation Error", 422, errors.array().map(error => (error.msg)));
+  }
 }

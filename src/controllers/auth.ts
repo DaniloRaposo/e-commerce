@@ -1,7 +1,7 @@
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import User from "../models/user";
-import { throwError, catchError } from "../utils/error";
+import { throwError, catchError, validateBody } from "../utils/error";
 import type { Request, Response, NextFunction } from "express";
 import type { TError } from "../utils/error";
 
@@ -12,6 +12,7 @@ import type { TError } from "../utils/error";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
+    validateBody(req);
     const existUser = await User.findOne({ email: req.body.email });
 
     // check if data base already has an user with the same email
@@ -39,6 +40,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
 
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
+    validateBody(req);
     const user = await User.findOne({email: req.body.email});
 
     if (!user) {
