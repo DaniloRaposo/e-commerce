@@ -8,7 +8,7 @@ import type { TError } from "./types";
  * Body content: email, password and name 
  */
 
-export async function createUser(req: Request, res: Response, next: NextFunction) {
+export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
     const existUser = await User.findOne({ email: req.body.email });
 
