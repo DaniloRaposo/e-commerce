@@ -1,7 +1,9 @@
 import { hash, compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 import User from "../models/user";
+import { throwError, catchError } from "../utils/error";
 import type { Request, Response, NextFunction } from "express";
-import type { TError } from "./types";
+import type { TError } from "../utils/error";
 
 /**
  * Middleware that create new user
@@ -14,9 +16,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
 
     // check if data base already has an user with the same email
     if (existUser) {
-      const error: TError = new Error("An user with this e-mail already exists");
-      error.statusCode = 422;
-      throw error;
+      throwError("An user with this e-mail already exists", 422);
     }
 
     const hashPassword = await hash(req.body.password, 12);
@@ -33,11 +33,30 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     res.status(201).json({message: "user created", userId: createUser._id });
 
   } catch (err) {
-    const error = err as TError;
-    if (!error.statusCode) {
-      error.statusCode = 500;
+    catchError(err as TError, next);
+  }
+}
+
+export async function login(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findOne({email: req.body.email});
+
+    if (!user) {
+      throwError("E-mail or password incorrect", 401);
+      return;
+    } 
+    
+    const comparePassword = await compare(req.body.password, user.password);
+
+    if (!comparePassword) {
+      throwError("E-mail or password incorrect", 401);
     }
 
-    next (error);
+    const token = sign({userId: user._id}, process.env.JWT_SECRET as string, {expiresIn: "1h"});
+
+    res.status(200).json({ message: "Successful login", token: token});
+
+  } catch (err) {
+    catchError(err as TError, next);
   }
 }
