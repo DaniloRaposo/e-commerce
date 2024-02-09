@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
-const userSchema: mongoose.Schema = new mongoose.Schema({
+interface TUser {
+  email: string,
+  password: string,
+  name: string,
+  products: Array<Object>
+}
+
+const userSchema: mongoose.Schema<TUser> = new mongoose.Schema<TUser>({
   email: {
     type: String,
     required: true,
