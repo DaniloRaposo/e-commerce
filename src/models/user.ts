@@ -4,10 +4,10 @@ interface TUser {
   email: string,
   password: string,
   name: string,
-  products: Array<Object>
+  products: mongoose.Types.DocumentArray<mongoose.Types.ObjectId>,
 }
 
-const userSchema: mongoose.Schema<TUser> = new mongoose.Schema<TUser>({
+const userSchema = new mongoose.Schema<TUser>({
   email: {
     type: String,
     required: true,
@@ -22,7 +22,7 @@ const userSchema: mongoose.Schema<TUser> = new mongoose.Schema<TUser>({
     required: true,
   },
   products: [
-    { type: Object }
+    { type: mongoose.Schema.Types.ObjectId, required: true }
   ]
 })
 
