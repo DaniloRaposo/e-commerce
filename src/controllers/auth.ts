@@ -56,7 +56,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     const token = sign({userId: user._id}, process.env.JWT_SECRET as string, {expiresIn: "1h"});
 
-    res.status(200).json({ message: "Successful login", token: token});
+    res.status(200).json({ message: "Successful login", token: token, userId: user._id.toString() });
 
   } catch (err) {
     catchError(err as TError, next);

@@ -5,23 +5,27 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import multer from "multer";
 import type {Express, Request, Response, NextFunction} from "express"
+import type { FileFilterCallback } from "multer";
 import type { TError } from "./utils/error";
 
 import authRouter from "./routes/auth";
+import shopRouter from "./routes/shop";
+
+type TCallback = (error: Error | null, parameter: string) => void;
 
 dotenv.config();
 
 const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req: Request, file: Express.Multer.File, cb: TCallback) => {
     cb(null, "images");
   },
-  filename: (req, file, cb) => {
+  filename: (req: Request, file: Express.Multer.File, cb: TCallback) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const acceptedFileTypes = ["image/png", "image/jpg", "image/jpeg"];
+const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+  const acceptedFileTypes: string[] = ["image/png", "image/jpg", "image/jpeg"];
 
   cb(null, acceptedFileTypes.includes(file.mimetype));
 };
@@ -45,6 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/shop", shopRouter);
 
 // middleware error handler
 app.use((error: TError, req: Request, res: Response, next: NextFunction) => {

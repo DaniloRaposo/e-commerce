@@ -66,7 +66,7 @@ export async function createProduct(
       name: req.body.name,
       price: Number(req.body.price),
       description: req.body.description,
-      userId: req.body.userId,
+      userId: req.userId,
       imageUrl: image.path,
     });
 
