@@ -31,7 +31,7 @@ export async function getProduct(
   next: NextFunction
 ) {
   try {
-    const prodId = req.params.prodId;
+    const prodId = req.params.id;
     const product = await Product.findById(prodId);
 
     if (!product) {
