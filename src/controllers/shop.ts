@@ -1,6 +1,7 @@
 import { validateBody, catchError, throwError } from "../utils/error";
 import Product from "../models/product";
 import User from "../models/user";
+import authenticated from "../middlewares/isAuth";
 import type { TError } from "../utils/error";
 import type { Request, Response, NextFunction } from "express";
 
