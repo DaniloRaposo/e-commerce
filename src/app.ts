@@ -10,6 +10,7 @@ import type { TError } from "./utils/error";
 
 import authRouter from "./routes/auth";
 import shopRouter from "./routes/shop";
+import chatRouter from "./routes/chat";
 
 type TCallback = (error: Error | null, parameter: string) => void;
 
@@ -50,6 +51,7 @@ app.use((req, res, next) => {
 
 app.use("/auth", authRouter);
 app.use("/shop", shopRouter);
+app.use("/chat", chatRouter);
 
 // middleware error handler
 app.use((error: TError, req: Request, res: Response, next: NextFunction) => {
